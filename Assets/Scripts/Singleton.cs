@@ -26,7 +26,7 @@ public class Singleton : MonoBehaviour
         {
             Instance = this;
             // Do not destroy the game object when loading different scenes
-            //DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject);
             SetupReferences();
         }
     }

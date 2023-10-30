@@ -12,7 +12,8 @@ public class LocalizedText : MonoBehaviour
     TextMeshProUGUI _textComponent;
 
 
-    IEnumerator Start()
+
+IEnumerator Start()
     {
         while (!LocalizationManager.Instance.LocalizationIsReady())
         {
@@ -31,6 +32,7 @@ public class LocalizedText : MonoBehaviour
         try
         {
             _textComponent.text = LocalizationManager.Instance.GetTextForKey(_localizationKey);
+            _textComponent.text = ParseShortHand(_textComponent.text);
         }
 
         catch (Exception e)
@@ -39,4 +41,20 @@ public class LocalizedText : MonoBehaviour
         }
     }
 
+    private string ParseShortHand(string stringToParse)
+    {
+        // 1. Parse dictionary keys
+        foreach (KeyValuePair<string, string> entry in LocalizationManager.Instance.ReturnDictionary())
+        {
+            if (stringToParse.Contains(entry.Key))
+            {
+                stringToParse = stringToParse.Replace(entry.Key, entry.Value);
+            }
+        }
+
+        // 2. Parse NewLine
+        stringToParse = stringToParse.Replace("|", System.Environment.NewLine);
+
+        return stringToParse;
+    }
 }

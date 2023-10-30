@@ -1,0 +1,12 @@
+{
+  "items": [
+    {
+      "key": "gamePad_btn_start",
+      "value": "boutton Start"
+    },
+    {
+      "key": "gamePad_btn_north",
+      "value": "boutton A"
+    }
+  ]
+}

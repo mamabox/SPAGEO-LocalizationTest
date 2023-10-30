@@ -14,6 +14,11 @@ public class LanguageDropdown : MonoBehaviour
 
         Debug.Log("Dropdown default : " + m_Dropdown.value);
     }
+    private void Start()
+    {
+        Singleton.Instance.localizationMngr.GetLanguageChoice();
+        m_Dropdown.value = Singleton.Instance.localizationMngr.GetLanguageChoiceID();
+    }
 
     private void OnDropdownValueChanged(TMP_Dropdown change)
     {

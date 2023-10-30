@@ -14,6 +14,7 @@ public class SignsBehaviour : MonoBehaviour
 
     public void ShowSignsByID(int ID)
     {
+        Debug.Log("ShowSignsByID() " + ID);
         for (int i = 0; i < signs.Count; i++)
         {
             if (signs[i] != null)
@@ -32,6 +33,7 @@ public class SignsBehaviour : MonoBehaviour
 
     private void HideAllSigns()
     {
+        Debug.Log("HideAllSigns()");
         for (int i = 0; i < signs.Count; i++)
         {
             signs[i].gameObject.SetActive(false);

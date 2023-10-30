@@ -10,13 +10,16 @@ public class LocalizationManager : MonoBehaviour
 {
     [Header("Important Strings")]
     private const string FILE_EXTENSION = ".json";
-    private const string FILENAME_PREFIX = "lang-";
+    private string FILENAME_PREFIX = "lang-";
+    private const string DEFAULT_FILENAME_PREFIX_gamepad = "lang-";
     private string FULL_NAME_TEXT_FILE;
+    private string FULL_NAME_TEXT_FILE_gamepad;
     private string URL = "";
     private string FULL_PATH_TEXT_FILE;
+    private string FULL_PATH_TEXT_FILE_gamepad;
     private string LANGUAGE_CHOICE = "FR";
     private string LOADED_JSON_TEXT = "";
-    private ApplicationLanguage _language = ApplicationLanguage.FR;
+    private ApplicationLanguage APPLICATION_LANG = ApplicationLanguage.FR;
     
 
     [Header ("Important bool")]
@@ -47,24 +50,96 @@ public class LocalizationManager : MonoBehaviour
     }
     #endregion Instance Function
 
+    public ApplicationLanguage ReturnApplicationLang()
+    {
+        return APPLICATION_LANG;
+    }
+
+    public string GetLanguageChoice()
+    {
+        return LANGUAGE_CHOICE;
+    }
+
+    public int GetLanguageChoiceID()
+    {
+        switch (LANGUAGE_CHOICE)
+        {
+            case "fr":
+                return 0;
+                
+            case "en":
+                return 1;
+                
+            default:
+                return 0;
+                
+        }
+    }
+    public Dictionary<string, string> ReturnDictionary()
+    {
+        return _localizedDictionary;
+    }
     private void Awake()
     {
+        Debug.Log("Awake");
         DontDestroyOnLoad(this.gameObject); //For scene loading
     }
 
     IEnumerator Start()
     {
         //LANGUAGE_CHOICE = LocaleHelper.GetSupportedLanguageCode();
+        SetApplicationLanguage(LANGUAGE_CHOICE);
         FULL_NAME_TEXT_FILE = FILENAME_PREFIX + LANGUAGE_CHOICE.ToLower() + FILE_EXTENSION;
 
-        #if UNITY_IOS || UNITY_ANDROID
+#if UNITY_IOS || UNITY_ANDROID
             FULL_PATH_TEXT_FILE = Path.Combine(Application.persistentDataPath, FULL_NAME_TEXT_FILE);
-        #else 
-            FULL_PATH_TEXT_FILE = Path.Combine(Application.streamingAssetsPath, FULL_NAME_TEXT_FILE);
-        #endif
+#else
+        FULL_PATH_TEXT_FILE = Path.Combine(Application.streamingAssetsPath, FULL_NAME_TEXT_FILE);
+#endif
         yield return StartCoroutine(LoadJsonLanguageData());
-       _isReady = true;
+        //_isReady = true;
 
+        yield return StartCoroutine(Start2());
+    }
+
+    IEnumerator Start2()
+    {
+
+        /** NEW */
+        Debug.Log("In Start2");
+            FILENAME_PREFIX = "gamepad-lang-";
+      FULL_NAME_TEXT_FILE = FILENAME_PREFIX + LANGUAGE_CHOICE.ToLower() + FILE_EXTENSION;
+
+#if UNITY_IOS || UNITY_ANDROID
+            FULL_PATH_TEXT_FILE = Path.Combine(Application.persistentDataPath, FULL_NAME_TEXT_FILE);
+#else
+        FULL_PATH_TEXT_FILE = Path.Combine(Application.streamingAssetsPath, FULL_NAME_TEXT_FILE);
+#endif
+        yield return StartCoroutine(LoadJsonLanguageDataNEW());
+        _isReady = true;
+        FILENAME_PREFIX = "lang-";
+    }
+
+    IEnumerator LoadJsonLanguageDataNEW()
+    {
+        CheckIfFileExists();
+        // if (File.Exists(dataFile))
+
+        yield return new WaitUntil(() => _isFileFound);
+
+        _loadedData = JsonUtility.FromJson<LocalizationData>(LOADED_JSON_TEXT);
+        _loadedData.items.ForEach(item =>
+        {
+            try
+            {
+                _localizedDictionary.Add(item.key, item.value);
+                //_dictionaryFR.languageItems.Add(new LocalizationItems (item.key, item.value ));
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+        });
     }
 
     IEnumerator LoadJsonLanguageData()
@@ -151,7 +226,7 @@ public class LocalizationManager : MonoBehaviour
     {
         LOADED_JSON_TEXT = File.ReadAllText(FULL_PATH_TEXT_FILE);
         _isFileFound = true;
-        //Debug.Log(LOADED_JSON_TEXT);
+        Debug.Log(LOADED_JSON_TEXT);
         
 
     }
@@ -230,6 +305,7 @@ public class LocalizationManager : MonoBehaviour
             _isFileFound = false;
             _isReady = false;
             LANGUAGE_CHOICE = langChoice;
+            SetApplicationLanguage(langChoice);
 
             FULL_NAME_TEXT_FILE = FILENAME_PREFIX + LANGUAGE_CHOICE.ToLower() + FILE_EXTENSION;
 
@@ -239,13 +315,26 @@ public class LocalizationManager : MonoBehaviour
                 FULL_PATH_TEXT_FILE = Path.Combine(Application.streamingAssetsPath, FULL_NAME_TEXT_FILE);
             #endif
             yield return StartCoroutine(LoadJsonLanguageData());
+            yield return StartCoroutine(Start2());
             _isReady = true;
+
+            //Update LocalizedText
             LocalizedText[] arrayText = FindObjectsOfType<LocalizedText>();
             
             for (int i = 0; i < arrayText.Length; i++)
             {
                 arrayText[i].AttributionText();
             }
+
+            //Update LocalizedAsset
+            //Update LocalizedText
+            LocalizedAsset[] arrayAssets = FindObjectsOfType<LocalizedAsset>();
+
+            for (int i = 0; i < arrayAssets.Length; i++)
+            {
+                arrayAssets[i].AttributeAsset();
+            }
+
             _isTryChnageLangRuntime = false;
         }
     }
@@ -254,4 +343,21 @@ public class LocalizationManager : MonoBehaviour
     {
         StartCoroutine(SwitchLanguageRuntime(lang));
     }
+
+    private void SetApplicationLanguage(string lang)
+    {
+        switch (lang)
+        {
+            case ("fr"):
+                APPLICATION_LANG = ApplicationLanguage.FR;
+                break;
+            case ("en"):
+                APPLICATION_LANG = ApplicationLanguage.EN;
+                break;
+            default:
+                APPLICATION_LANG = ApplicationLanguage.FR;
+                break;
+        }
+    }
+
 }

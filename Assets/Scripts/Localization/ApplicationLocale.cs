@@ -7,3 +7,4 @@ public class ApplicationLocale
 }
 
 public enum ApplicationLanguage {FR, EN, DE}
+
