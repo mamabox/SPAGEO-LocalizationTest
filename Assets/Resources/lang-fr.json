@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "key": "language",
+      "value": "français"
+    },
+    {
+      "key": "menu_student",
+      "value": "élève(s)"
+    },
+    {
+      "key": "welcome",
+      "value": "Bienvenue dans SPAGEO City!"
+    },
+    {
+      "key": "shorthand",
+      "value": "Appuie sur le gamePad_btn_start pour commencer."
+    }
+  ]
+}
