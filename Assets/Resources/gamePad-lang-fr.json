@@ -1,4 +1,6 @@
 {
+  "fileType": "gamepadConfig",
+  "description": "Xbox",
   "items": [
     {
       "key": "gamePad_btn_start",

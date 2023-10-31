@@ -12,7 +12,7 @@ public class LanguageDropdown : MonoBehaviour
         m_Dropdown.onValueChanged.AddListener(delegate { OnDropdownValueChanged(m_Dropdown); });
 
 
-        Debug.Log("Dropdown default : " + m_Dropdown.value);
+        //Debug.Log("Dropdown default : " + m_Dropdown.value);
     }
     private void Start()
     {
@@ -38,6 +38,6 @@ public class LanguageDropdown : MonoBehaviour
         }
 
         Singleton.Instance.localizationMngr.ChangeLanguage(languageChoice);
-        Debug.Log("Language choice set to " + languageChoice);
+        //Debug.Log("Language choice set to " + languageChoice);
     }
 }

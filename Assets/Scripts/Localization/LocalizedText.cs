@@ -15,7 +15,7 @@ public class LocalizedText : MonoBehaviour
 
 IEnumerator Start()
     {
-        while (!LocalizationManager.Instance.LocalizationIsReady())
+        while (!Singleton.Instance.localizationMngr.LocalizationIsReady())
         {
             yield return null;
         }
@@ -31,7 +31,8 @@ IEnumerator Start()
 
         try
         {
-            _textComponent.text = LocalizationManager.Instance.GetTextForKey(_localizationKey);
+            //_textComponent.text = LocalizationManager.Instance.GetTextForKey(_localizationKey);
+            _textComponent.text = Singleton. Instance.localizationMngr.GetTextForKey(_localizationKey);
             _textComponent.text = ParseShortHand(_textComponent.text);
         }
 
@@ -44,7 +45,7 @@ IEnumerator Start()
     private string ParseShortHand(string stringToParse)
     {
         // 1. Parse dictionary keys
-        foreach (KeyValuePair<string, string> entry in LocalizationManager.Instance.ReturnDictionary())
+        foreach (KeyValuePair<string, string> entry in Singleton.Instance.localizationMngr.ReturnDictionary())
         {
             if (stringToParse.Contains(entry.Key))
             {

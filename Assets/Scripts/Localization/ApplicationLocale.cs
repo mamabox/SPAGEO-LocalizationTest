@@ -6,5 +6,5 @@ public class ApplicationLocale
     public const string DE = "DE";
 }
 
-public enum ApplicationLanguage {FR, EN, DE}
+public enum ApplicationLanguage {FR, EN, DE, IT}
 

@@ -9,7 +9,7 @@ public class LocalizedAsset : MonoBehaviour
 
     private IEnumerator Start()
     {
-        while (!LocalizationManager.Instance.LocalizationIsReady())
+        while (!Singleton.Instance.localizationMngr.LocalizationIsReady())
         {
             yield return null;
         }

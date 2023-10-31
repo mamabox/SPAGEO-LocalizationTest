@@ -4,7 +4,7 @@ public class ChangeLanguageEvent : MonoBehaviour
 {
     public void OnClickChangeLanguageRuntime(string lang)
     {
-        LocalizationManager.Instance.ChangeLanguage(lang);
+        Singleton.Instance.localizationMngr.ChangeLanguage(lang);
     }
 
     public void OnSelectChangeLanguageRuntime()

@@ -1,4 +1,6 @@
 {
+  "fileType": "Language",
+  "description": "English (default)",
   "items": [
     {
       "key": "gamePad_btn_start",

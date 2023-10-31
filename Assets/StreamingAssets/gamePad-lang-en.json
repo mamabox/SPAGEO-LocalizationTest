@@ -1,4 +1,6 @@
 {
+  "fileType": "Language",
+  "description": "English (default)",
   "items": [
     {
       "key": "gamePad_btn_start",
@@ -6,7 +8,7 @@
     },
     {
       "key": "gamePad_btn_north",
-      "value": "Boutton A"
+      "value": "Button A"
     }
   ]
 }

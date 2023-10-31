@@ -13,6 +13,8 @@ public class Singleton : MonoBehaviour
 
     // Managers used in game that will be accessed via Singleton
     public LocalizationManager localizationMngr { get; private set; }
+    public DictionaryImportManager dictionaryImportManager { get; private set; }
+    public LocalizationService localizationService { get; private set; }
 
     private void Awake()
     {
@@ -34,5 +36,7 @@ public class Singleton : MonoBehaviour
     private void SetupReferences()
     {
         localizationMngr = GetComponentInChildren<LocalizationManager>();
+        dictionaryImportManager = GetComponentInChildren<DictionaryImportManager>();
+        localizationService = GetComponentInChildren<LocalizationService>();
     }
 }

@@ -1,12 +1,14 @@
 {
+  "fileType": "gamepadConfig",
+  "description": "Xbox",
   "items": [
     {
       "key": "gamePad_btn_start",
-      "value": "boutton Start"
+      "value": "bouton Start"
     },
     {
       "key": "gamePad_btn_north",
-      "value": "boutton A"
+      "value": "bouton A"
     }
   ]
 }

@@ -34,22 +34,6 @@ public class LocalizationManager : MonoBehaviour
     [SerializeField]
     LanguageFile _dictionaryFR;
 
-    #region Instance Function
-    private static LocalizationManager LocalizationManagerInstance;
-
-    public static LocalizationManager Instance
-    {
-        get
-        {
-            if(LocalizationManagerInstance == null)
-            {
-                LocalizationManagerInstance = FindObjectOfType(typeof(LocalizationManager)) as LocalizationManager;
-            }
-            return LocalizationManagerInstance;
-        }
-    }
-    #endregion Instance Function
-
     public ApplicationLanguage ReturnApplicationLang()
     {
         return APPLICATION_LANG;
@@ -79,11 +63,6 @@ public class LocalizationManager : MonoBehaviour
     {
         return _localizedDictionary;
     }
-    private void Awake()
-    {
-        Debug.Log("Awake");
-        DontDestroyOnLoad(this.gameObject); //For scene loading
-    }
 
     IEnumerator Start()
     {
@@ -96,6 +75,7 @@ public class LocalizationManager : MonoBehaviour
 #else
         FULL_PATH_TEXT_FILE = Path.Combine(Application.streamingAssetsPath, FULL_NAME_TEXT_FILE);
 #endif
+        Debug.Log("FULL PATH TEXT FILE: " + FULL_PATH_TEXT_FILE);
         yield return StartCoroutine(LoadJsonLanguageData());
         //_isReady = true;
 
@@ -106,7 +86,7 @@ public class LocalizationManager : MonoBehaviour
     {
 
         /** NEW */
-        Debug.Log("In Start2");
+        //Debug.Log("In Start2");
             FILENAME_PREFIX = "gamepad-lang-";
       FULL_NAME_TEXT_FILE = FILENAME_PREFIX + LANGUAGE_CHOICE.ToLower() + FILE_EXTENSION;
 
@@ -115,6 +95,7 @@ public class LocalizationManager : MonoBehaviour
 #else
         FULL_PATH_TEXT_FILE = Path.Combine(Application.streamingAssetsPath, FULL_NAME_TEXT_FILE);
 #endif
+        Debug.Log("FULL PATH TEXT FILE: " + FULL_PATH_TEXT_FILE);
         yield return StartCoroutine(LoadJsonLanguageDataNEW());
         _isReady = true;
         FILENAME_PREFIX = "lang-";
@@ -226,7 +207,7 @@ public class LocalizationManager : MonoBehaviour
     {
         LOADED_JSON_TEXT = File.ReadAllText(FULL_PATH_TEXT_FILE);
         _isFileFound = true;
-        Debug.Log(LOADED_JSON_TEXT);
+        //Debug.Log(LOADED_JSON_TEXT);
         
 
     }

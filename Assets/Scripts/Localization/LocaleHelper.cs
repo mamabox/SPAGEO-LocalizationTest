@@ -27,4 +27,29 @@ public static class LocaleHelper
     {
         return ApplicationLocale.EN;
     }
+
+    public static ApplicationLanguage GetSupportedLanguageCodeENUM()
+    {
+        SystemLanguage lang = Application.systemLanguage;
+
+        switch (lang)
+        {
+            case SystemLanguage.French:
+                return ApplicationLanguage.FR;
+            case SystemLanguage.English:
+                return ApplicationLanguage.EN;
+            case SystemLanguage.Spanish:
+                return ApplicationLanguage.DE;
+            case SystemLanguage.German:
+                return ApplicationLanguage.IT;
+            default:
+                return GetDefaultSupportLanguageCodeENUM();
+        }
+
+    }
+
+    static ApplicationLanguage GetDefaultSupportLanguageCodeENUM()
+    {
+        return ApplicationLanguage.EN;
+    }
 }
