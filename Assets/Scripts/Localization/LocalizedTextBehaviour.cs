@@ -1,24 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using TMPro;
 
 /*******************************
- *  LocalizedText.cs
+ *  LocalizedTextBehaviour.cs
  *  
- * Added to TMP_Pro gameobject to localize text - uses LocalizationManager.cs
+ * Added to TMP_Pro gameobject to localize text - uses LocalizatioService.cs
  *  
  *******************************/
 
-public class LocalizedText : MonoBehaviour
+public class LocalizedTextBehaviour : MonoBehaviour
 {
     /*******************************
      *  VARIABLES
      *******************************/
 
     [SerializeField] private string _localizationKey;
-    TextMeshProUGUI _textComponent;
+    [SerializeField] TextMeshProUGUI _textComponent;
 
     /*******************************
      * AWAKE, START, UPDATE
@@ -26,24 +26,24 @@ public class LocalizedText : MonoBehaviour
 
     IEnumerator Start()
     {
-        while (!Singleton.Instance.localizationMngr.LocalizationIsReady())
+        while (!Singleton.Instance.localizationService.LocalizationIsReady())
         {
             yield return null;
         }
-        AttributionText();
+        SetText();
     }
 
-    public void AttributionText()
+    [ContextMenu("Set Text")]
+    public void SetText()
     {
-        if(_textComponent == null)
+        if (_textComponent == null)
         {
             _textComponent = gameObject.GetComponent<TextMeshProUGUI>();
         }
         try
         {
-            //_textComponent.text = LocalizationManager.Instance.GetTextForKey(_localizationKey);
-            _textComponent.text = Singleton. Instance.localizationMngr.GetTextForKey(_localizationKey);
-            _textComponent.text = ParseShortHand(_textComponent.text);
+           _textComponent.text = Singleton.Instance.localizationService.GetTextForLanguageKey(_localizationKey);
+           _textComponent.text = ParseShortHand(_textComponent.text);
         }
         catch (Exception e)
         {
@@ -53,8 +53,10 @@ public class LocalizedText : MonoBehaviour
 
     private string ParseShortHand(string stringToParse)
     {
-        // 1. Parse dictionary keys
-        foreach (KeyValuePair<string, string> entry in Singleton.Instance.localizationMngr.ReturnDictionary())
+        var _dictionary = Singleton.Instance.localizationService.GetShorthandDictionary();
+
+        // 1. Parse shorthand keys
+        foreach (KeyValuePair<string, string> entry in _dictionary)
         {
             if (stringToParse.Contains(entry.Key))
             {

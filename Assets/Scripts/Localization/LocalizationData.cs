@@ -1,4 +1,12 @@
+using System;
 using System.Collections.Generic;
+
+/*******************************
+ *  LocalizationData.cs
+ *  
+ * Used by LocolizationManager as example
+ *  
+ *******************************/
 
 public class LocalizationData
 {

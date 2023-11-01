@@ -7,8 +7,23 @@ using UnityEngine.Networking;
 using UnityEngine.UIElements;
 using System.IO.Enumeration;
 
+/*******************************
+ *  DictionaryImportManager.cs
+ *  
+ *  Imports dictionary from JSON files
+ *  
+ *  . - Variables
+ *  . - Awake, Start, Update
+ *  x - Public Fonctions
+ *  
+ *******************************/
+
 public class DictionaryImportManager : MonoBehaviour
 {
+    /*******************************
+    *  VARIABLES
+    *******************************/
+
     // Strings
     private const string FILE_EXTENSION = ".json";
     private string _textFileFullPath;
@@ -24,8 +39,11 @@ public class DictionaryImportManager : MonoBehaviour
     private Dictionary<string, string> _dictionary;
     private DictionaryData _loadedData;
 
-    // PUBLIC FONCTION
-    public Dictionary<string,string> ImportDictionaryFromJson(string importFile)
+    /*******************************
+    * PUBLIC FUNCTIONS
+    *******************************/
+
+    public IEnumerator ImportDictionaryFromJson(string importFile)
     {
         _fileName = importFile;
 
@@ -33,13 +51,21 @@ public class DictionaryImportManager : MonoBehaviour
         string _fullPathText = Path.Combine(Application.PersistentDataPath, _fileName);
 #else
         string _fullPathText = Path.Combine(Application.streamingAssetsPath, _fileName);
-        
+
 #endif
         _textFileFullPath = _fullPathText + FILE_EXTENSION;
         //Debug.Log("fullPathText: " + _textFileFullPath) ;
-        StartCoroutine(LoadJsonData());
+        yield return StartCoroutine(LoadJsonData());
+        //Debug.Log("Dictionary test: " + _dictionary["welcome"]);
+    }
+    public Dictionary<string, string> GetDictionary()
+    {
         return _dictionary;
     }
+
+    /*******************************
+     * MAIN
+     *******************************/
 
     // Load data from JSON data and return a dictionnary
     IEnumerator LoadJsonData()
@@ -48,12 +74,14 @@ public class DictionaryImportManager : MonoBehaviour
         yield return new WaitUntil(() => _isFileFound);
 
         _loadedData = JsonUtility.FromJson<DictionaryData>(_loadedJson);
+        Debug.Log("DictionaryImportMngr (loadedData): " + _loadedData);
         _dictionary = new Dictionary<string, string>(_loadedData.items.Count);
         _loadedData.items.ForEach(item =>
         {
             try
             {
                 _dictionary.Add(item.key, item.value);
+                Debug.Log("Inside LoadJsonData() key|value: " + item.key + "|"+  item.value);
             }
             catch (Exception e) 
             {

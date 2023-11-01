@@ -6,12 +6,28 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 
+/*******************************
+ *  LocalizationManager.cs
+ *  
+ * Follows tutorial from https://www.youtube.com/watch?v=vadsss0NJcw&list=PLTv8RdpDL35oGLPdApR7Q5tub7UY34_lD&pp=iAQB
+ *  
+ *  . - Variables
+ *  . - Awake, Start, Update
+ *  x - From tutorial
+ *  x - Public Fonctions
+ *  
+ *******************************/
+
 public class LocalizationManager : MonoBehaviour
 {
+    /*******************************
+     *  VARIABLES
+     *******************************/
+
     [Header("Important Strings")]
     private const string FILE_EXTENSION = ".json";
-    private string FILENAME_PREFIX = "lang-";
-    private const string DEFAULT_FILENAME_PREFIX_gamepad = "lang-";
+    private string FILENAME_PREFIX = "old-lang-";
+    //private const string DEFAULT_FILENAME_PREFIX_gamepad = "old-gamepad-lang-";
     private string FULL_NAME_TEXT_FILE;
     private string FULL_NAME_TEXT_FILE_gamepad;
     private string URL = "";
@@ -30,39 +46,13 @@ public class LocalizationManager : MonoBehaviour
     [Header ("JSON variables")]
     private Dictionary<string, string> _localizedDictionary;
     private LocalizationData _loadedData;
+    private LocalizationData _loadedDataTest;
+ 
 
-    [SerializeField]
-    LanguageFile _dictionaryFR;
 
-    public ApplicationLanguage ReturnApplicationLang()
-    {
-        return APPLICATION_LANG;
-    }
-
-    public string GetLanguageChoice()
-    {
-        return LANGUAGE_CHOICE;
-    }
-
-    public int GetLanguageChoiceID()
-    {
-        switch (LANGUAGE_CHOICE)
-        {
-            case "fr":
-                return 0;
-                
-            case "en":
-                return 1;
-                
-            default:
-                return 0;
-                
-        }
-    }
-    public Dictionary<string, string> ReturnDictionary()
-    {
-        return _localizedDictionary;
-    }
+    /*******************************
+     * AWAKE, START, UPDATE
+     *******************************/
 
     IEnumerator Start()
     {
@@ -75,30 +65,36 @@ public class LocalizationManager : MonoBehaviour
 #else
         FULL_PATH_TEXT_FILE = Path.Combine(Application.streamingAssetsPath, FULL_NAME_TEXT_FILE);
 #endif
-        Debug.Log("FULL PATH TEXT FILE: " + FULL_PATH_TEXT_FILE);
+        //Debug.Log("FULL PATH TEXT FILE: " + FULL_PATH_TEXT_FILE);
         yield return StartCoroutine(LoadJsonLanguageData());
         //_isReady = true;
 
         yield return StartCoroutine(Start2());
     }
 
+
+
+    /*******************************
+     * EDITED OR ADDED
+     *******************************/
+
     IEnumerator Start2()
     {
 
         /** NEW */
         //Debug.Log("In Start2");
-            FILENAME_PREFIX = "gamepad-lang-";
-      FULL_NAME_TEXT_FILE = FILENAME_PREFIX + LANGUAGE_CHOICE.ToLower() + FILE_EXTENSION;
+        FILENAME_PREFIX = "old-gamepad-lang-";
+        FULL_NAME_TEXT_FILE = FILENAME_PREFIX + LANGUAGE_CHOICE.ToLower() + FILE_EXTENSION;
 
 #if UNITY_IOS || UNITY_ANDROID
             FULL_PATH_TEXT_FILE = Path.Combine(Application.persistentDataPath, FULL_NAME_TEXT_FILE);
 #else
         FULL_PATH_TEXT_FILE = Path.Combine(Application.streamingAssetsPath, FULL_NAME_TEXT_FILE);
 #endif
-        Debug.Log("FULL PATH TEXT FILE: " + FULL_PATH_TEXT_FILE);
+        //Debug.Log("FULL PATH TEXT FILE: " + FULL_PATH_TEXT_FILE);
         yield return StartCoroutine(LoadJsonLanguageDataNEW());
         _isReady = true;
-        FILENAME_PREFIX = "lang-";
+        FILENAME_PREFIX = "old-lang-";
     }
 
     IEnumerator LoadJsonLanguageDataNEW()
@@ -122,6 +118,27 @@ public class LocalizationManager : MonoBehaviour
             }
         });
     }
+
+    private void SetApplicationLanguage(string lang)
+    {
+        switch (lang)
+        {
+            case ("fr"):
+                APPLICATION_LANG = ApplicationLanguage.FR;
+                break;
+            case ("en"):
+                APPLICATION_LANG = ApplicationLanguage.EN;
+                break;
+            default:
+                APPLICATION_LANG = ApplicationLanguage.FR;
+                break;
+        }
+    }
+
+    /*******************************
+     * FROM TUTORIAL 
+     *******************************/
+
 
     IEnumerator LoadJsonLanguageData()
     {
@@ -155,7 +172,7 @@ public class LocalizationManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("File already exists.");
+            //Debug.Log("File already exists.");
             LoadFileContents();
             _isFileFound = true;
         }
@@ -197,9 +214,9 @@ public class LocalizationManager : MonoBehaviour
         }
 
         LOADED_JSON_TEXT = www.downloadHandler.text;
-        Debug.Log("Copying file to LOADED_JSON_TEXT");
+        //Debug.Log("Copying file to LOADED_JSON_TEXT");
         File.WriteAllText(FULL_PATH_TEXT_FILE, LOADED_JSON_TEXT);
-        Debug.Log("Writing file to StreamingAsset from Web");
+        //Debug.Log("Writing file to StreamingAsset from Web");
         StartCoroutine(WaitForFileCreation());
     }
 
@@ -222,7 +239,7 @@ public class LocalizationManager : MonoBehaviour
         }
         LOADED_JSON_TEXT = myFile.ToString();
         File.WriteAllText(FULL_PATH_TEXT_FILE, LOADED_JSON_TEXT);
-        Debug.Log("Writing file to StreamingAsset from Ressources folder");
+        //Debug.Log("Writing file to StreamingAsset from Ressources folder");
         StartCoroutine(WaitForFileCreation());
 
     }
@@ -236,7 +253,7 @@ public class LocalizationManager : MonoBehaviour
             timeout += Time.deltaTime;
             yield return null;
         }
-        Debug.Log("File succesfully created.");
+        //Debug.Log("File succesfully created.");
     }
 
     //if it can open the file, returns true
@@ -250,7 +267,7 @@ public class LocalizationManager : MonoBehaviour
         catch (IOException)
         {
             _isFileFound = true;
-            Debug.Log("File found.");
+            //Debug.Log("File found.");
             return true;
         }
         finally
@@ -266,17 +283,7 @@ public class LocalizationManager : MonoBehaviour
         return false;
     }
 
-    public string GetTextForKey(string localizationKey)
-    {
-        if (_localizedDictionary.ContainsKey(localizationKey))
-        {
-            return _localizedDictionary[localizationKey];
-        }
-        else
-        {
-            return "Error, no key matching with " + localizationKey;
-        }
-    }
+
 
     IEnumerator SwitchLanguageRuntime(string langChoice)
     {
@@ -325,20 +332,50 @@ public class LocalizationManager : MonoBehaviour
         StartCoroutine(SwitchLanguageRuntime(lang));
     }
 
-    private void SetApplicationLanguage(string lang)
+
+
+    /*******************************
+     * PUBLIC FUNCTIONS (ADDED)
+     *******************************/
+    public string GetTextForKey(string localizationKey)
     {
-        switch (lang)
+        if (_localizedDictionary.ContainsKey(localizationKey))
         {
-            case ("fr"):
-                APPLICATION_LANG = ApplicationLanguage.FR;
-                break;
-            case ("en"):
-                APPLICATION_LANG = ApplicationLanguage.EN;
-                break;
-            default:
-                APPLICATION_LANG = ApplicationLanguage.FR;
-                break;
+            return _localizedDictionary[localizationKey];
+        }
+        else
+        {
+            return "Error, no key matching with " + localizationKey;
         }
     }
 
+    public ApplicationLanguage ReturnApplicationLang()
+    {
+        return APPLICATION_LANG;
+    }
+
+    public string GetLanguageChoice()
+    {
+        return LANGUAGE_CHOICE;
+    }
+
+    public int GetLanguageChoiceID()
+    {
+        switch (LANGUAGE_CHOICE)
+        {
+            case "fr":
+                return 0;
+
+            case "en":
+                return 1;
+
+            default:
+                return 0;
+
+        }
+    }
+    public Dictionary<string, string> ReturnDictionary()
+    {
+        return _localizedDictionary;
+    }
 }
