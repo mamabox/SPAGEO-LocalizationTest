@@ -74,14 +74,13 @@ public class DictionaryImportManager : MonoBehaviour
         yield return new WaitUntil(() => _isFileFound);
 
         _loadedData = JsonUtility.FromJson<DictionaryData>(_loadedJson);
-        Debug.Log("DictionaryImportMngr (loadedData): " + _loadedData);
         _dictionary = new Dictionary<string, string>(_loadedData.items.Count);
         _loadedData.items.ForEach(item =>
         {
             try
             {
                 _dictionary.Add(item.key, item.value);
-                Debug.Log("Inside LoadJsonData() key|value: " + item.key + "|"+  item.value);
+                //Debug.Log("Inside LoadJsonData() key|value: " + item.key + "|"+  item.value);
             }
             catch (Exception e) 
             {

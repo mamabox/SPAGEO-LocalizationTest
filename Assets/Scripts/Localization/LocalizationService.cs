@@ -31,7 +31,7 @@ public class LocalizationService : MonoBehaviour
     private string _langTextFileFullName;
     private string _gamepadTextFileFullName;
 
-    private ApplicationLanguage _applicationLanguage = ApplicationLanguage.FR;
+    [SerializeField] private ApplicationLanguage _applicationLanguage = ApplicationLanguage.FR;
 
     // Important Booleans
     private bool _isLocalizationReady = false;
@@ -50,22 +50,52 @@ public class LocalizationService : MonoBehaviour
      *******************************/
     IEnumerator Start()
     {
-        //Debug.Log("enum = " + _applicationLanguage);
-        //Debug.Log("(int)enum = " + (int)_applicationLanguage);
-        //Debug.Log("nameof(enum) = " + nameof(_applicationLanguage));
-        //Debug.Log("enum.String() = " + _applicationLanguage.ToString());
-
         //_applicationLanguage = LocaleHelper.GetSupportedSystemLanguage();
+        yield return StartCoroutine(FetchDictionaries());
+ 
+        _isLocalizationReady = true;
+    }
+
+    /*******************************
+     * MAIN
+     *******************************/
+    IEnumerator FetchDictionaries()
+    {
         _langTextFileFullName = _languageFilenamePrefix + _applicationLanguage.ToString().ToLower();
         _gamepadTextFileFullName = _gamepadFilenamePrefix + _applicationLanguage.ToString().ToLower();
 
+        // Fetch language dictionary
         yield return Singleton.Instance.dictionaryImportManager.ImportDictionaryFromJson(_langTextFileFullName);
         _languageDictionary = Singleton.Instance.dictionaryImportManager.GetDictionary();
 
+        // Fetch shorthand dictionary
         yield return Singleton.Instance.dictionaryImportManager.ImportDictionaryFromJson(_gamepadTextFileFullName);
-        _shorthandDictionary = Singleton.Instance.dictionaryImportManager.GetDictionary(); ;
- 
+        _shorthandDictionary = Singleton.Instance.dictionaryImportManager.GetDictionary();
+    }
+
+    IEnumerator SwitchLanguageAtRuntime(ApplicationLanguage lang)
+    {
+        if (!_isTryChangeLangRuntime)
+        {
+            _isTryChangeLangRuntime = true;
+            _isLocalizationReady = false;
+            _applicationLanguage = lang;
+        }
+
+        yield return StartCoroutine(FetchDictionaries());
         _isLocalizationReady = true;
+        UpdateLocalizedText();
+        _isTryChangeLangRuntime = false;
+    }
+    // TODO: Replace by event handling
+    private void UpdateLocalizedText()
+    {
+        LocalizedTextBehaviour[] arrayText = FindObjectsOfType<LocalizedTextBehaviour>();
+
+        for (int i = 0; i < arrayText.Length; i++)
+        {
+            arrayText[i].SetText();
+        }
     }
 
     /*******************************
@@ -80,13 +110,13 @@ public class LocalizationService : MonoBehaviour
     {
         if (_languageDictionary.ContainsKey(key))
         {
-            Debug.Log("key is : " + _languageDictionary[key]);
+            //Debug.Log("key is : " + _languageDictionary[key]);
             return _languageDictionary[key];
         }
         else
         {
-            Debug.Log("Error: Key [" + key + "] not found.");
-            return "Error: Key [" + key + "] not found.";
+            Debug.Log("Error: Key [" + key + "] not found in "+ _langTextFileFullName);
+            return "Error: Key [" + key + "] not found in.";
         }
     }
 
@@ -103,5 +133,11 @@ public class LocalizationService : MonoBehaviour
     public ApplicationLanguage GetApplicationLang()
     {
         return _applicationLanguage; //use (int)GetApplicationLang() or nameof(_applicationLang) or _applicationLanguage.ToString();
+    }
+
+    public void ChangeLanguage(ApplicationLanguage lang)
+    {
+        Debug.Log("ChangeLanguage() to " + lang);
+        StartCoroutine(SwitchLanguageAtRuntime(lang));
     }
 }

@@ -38,6 +38,7 @@ public class LanguageDropdown : MonoBehaviour
         }
 
         Singleton.Instance.localizationMngr.ChangeLanguage(languageChoice);
+        Singleton.Instance.localizationService.ChangeLanguage((ApplicationLanguage)m_Dropdown.value);
         //Debug.Log("Language choice set to " + languageChoice);
     }
 }

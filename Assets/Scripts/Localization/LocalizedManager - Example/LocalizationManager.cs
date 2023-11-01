@@ -293,7 +293,7 @@ public class LocalizationManager : MonoBehaviour
             _isFileFound = false;
             _isReady = false;
             LANGUAGE_CHOICE = langChoice;
-            SetApplicationLanguage(langChoice);
+            //SetApplicationLanguage(langChoice);
 
             FULL_NAME_TEXT_FILE = FILENAME_PREFIX + LANGUAGE_CHOICE.ToLower() + FILE_EXTENSION;
 
