@@ -85,6 +85,7 @@ public class LocalizationService : MonoBehaviour
         yield return StartCoroutine(FetchDictionaries());
         _isLocalizationReady = true;
         UpdateLocalizedText();
+        UpdateLocalizedAssets();
         _isTryChangeLangRuntime = false;
     }
     // TODO: Replace by event handling
@@ -95,6 +96,17 @@ public class LocalizationService : MonoBehaviour
         for (int i = 0; i < arrayText.Length; i++)
         {
             arrayText[i].SetText();
+        }
+    }
+
+    // TODO: Replace by event handling
+    private void UpdateLocalizedAssets()
+    {
+        LocalizedAssetBehaviour[] arrayText = FindObjectsOfType<LocalizedAssetBehaviour>();
+
+        for (int i = 0; i < arrayText.Length; i++)
+        {
+            arrayText[i].SetAsset();
         }
     }
 

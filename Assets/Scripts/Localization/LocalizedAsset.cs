@@ -32,19 +32,19 @@ public class LocalizedAsset : MonoBehaviour
         }
     }
 
-    public void AttributeAssetOLD()
-    {
-        switch (Singleton.Instance.localizationMngr.ReturnApplicationLang())
-        {
-            case ApplicationLanguage.FR:
-                this.GetComponent<SignsBehaviour>().ShowSignsByID(0);
-                break;
-            case ApplicationLanguage.EN:
-                this.GetComponent<SignsBehaviour>().ShowSignsByID(1);
-                break;
-            default:
-                this.GetComponent<SignsBehaviour>().ShowSignsByID(0);
-                break;
-        }
-    }
+    //public void AttributeAssetOLD()
+    //{
+    //    switch (Singleton.Instance.localizationMngr.ReturnApplicationLang())
+    //    {
+    //        case ApplicationLanguage.FR:
+    //            this.GetComponent<SignsBehaviour>().ShowSignsByID(0);
+    //            break;
+    //        case ApplicationLanguage.EN:
+    //            this.GetComponent<SignsBehaviour>().ShowSignsByID(1);
+    //            break;
+    //        default:
+    //            this.GetComponent<SignsBehaviour>().ShowSignsByID(0);
+    //            break;
+    //    }
+    //}
 }
